@@ -20,6 +20,12 @@
     "url": "https://github.com/jcohn16/battleship/issues"
   },
   "homepage": "https://github.com/jcohn16/battleship#readme",
+  "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ]
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.15.0",
     "eslint": "^7.32.0",

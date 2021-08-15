@@ -1,15 +1,11 @@
 const ship = (coordinates) => {
-  const details = {
-    length: coordinates.length,
-    coordinates,
-    hitArray: [],
-    isSunk: false,
-  };
+  const hits = [];
 
-  const hit = (coordinate) => details.hitArray.push(coordinate);
-  const isSunk = () => details.hitArray.length === details.length;
+  const getHits = () => hits;
+  const hit = (coordinate) => hits.push(coordinate);
+  const isSunk = () => hits.length === coordinates.length;
 
-  return { hit, isSunk };
+  return { coordinates, getHits, hit, isSunk };
 };
 
 export default ship;
