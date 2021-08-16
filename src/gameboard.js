@@ -1,8 +1,8 @@
-import createShip from './ship';
+import CreateShip from './ship';
 
-const gameboard = () => {
+const CreateGameboard = () => {
   const ships = [];
-  const addShip = (coordinates) => ships.push(createShip(coordinates));
+  const addShip = (coordinates) => ships.push(CreateShip(coordinates));
 
   const missedAttacks = [];
   const getMissedAttacks = () => missedAttacks;
@@ -40,4 +40,4 @@ const gameboard = () => {
   return { addShip, getMissedAttacks, recieveAttack, areAllShipsSunk };
 };
 
-export default gameboard;
+export default CreateGameboard;
