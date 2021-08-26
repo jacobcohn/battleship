@@ -4,8 +4,15 @@ const CreateGameboard = () => {
   const ships = [];
   const addShip = (coordinates) => ships.push(CreateShip(coordinates));
 
-  const missedAttacks = [];
-  const getMissedAttacks = () => missedAttacks;
+  const gameboardInfo = {
+    missedAttacks: [],
+    sunkenShips: [],
+    hits: [],
+    possibleAttacks: [],
+    allShipsSunk: false,
+  };
+  for (let i = 0; i < 64; i += 1) gameboardInfo.possibleAttacks.push(i);
+  const getGameboardInfo = () => gameboardInfo;
 
   const isShipHit = (coordinate) => {
     let status = false;
@@ -23,12 +30,6 @@ const CreateGameboard = () => {
     return specificShip;
   };
 
-  const recieveAttack = (coordinate) => {
-    if (isShipHit(coordinate)) {
-      findShip(coordinate).hit(coordinate);
-    } else missedAttacks.push(coordinate);
-  };
-
   const areAllShipsSunk = () => {
     let status = true;
     ships.forEach((ship) => {
@@ -37,7 +38,27 @@ const CreateGameboard = () => {
     return status;
   };
 
-  return { addShip, getMissedAttacks, recieveAttack, areAllShipsSunk };
+  const recieveAttack = (coordinate) => {
+    if (isShipHit(coordinate)) {
+      const hitShip = findShip(coordinate);
+      hitShip.hit(coordinate);
+      gameboardInfo.hits.push(coordinate);
+      if (hitShip.isSunk()) {
+        gameboardInfo.sunkenShips.push(hitShip.coordinates);
+        hitShip.coordinates.forEach((shipCoordinate) => {
+          const index = gameboardInfo.hits.indexOf(shipCoordinate);
+          gameboardInfo.hits.splice(index, 1);
+        });
+      }
+    } else {
+      gameboardInfo.missedAttacks.push(coordinate);
+    }
+    gameboardInfo.allShipsSunk = areAllShipsSunk();
+    const index = gameboardInfo.possibleAttacks.indexOf(coordinate);
+    gameboardInfo.possibleAttacks.splice(index, 1);
+  };
+
+  return { addShip, recieveAttack, getGameboardInfo };
 };
 
 export default CreateGameboard;
