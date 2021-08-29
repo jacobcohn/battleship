@@ -9,7 +9,7 @@ describe('the computer when sendAttack is called', () => {
     recieveAttackMockFn = jest.fn();
   });
 
-  const initialGameboardInfo = () => {
+  const setUpGameboard = (hitCoordinates, notPossibleAttacks) => {
     const gameboardInfo = {
       missedAttacks: [],
       sunkenShips: [],
@@ -18,14 +18,20 @@ describe('the computer when sendAttack is called', () => {
       allShipsSunk: false,
     };
     for (let i = 0; i < 64; i += 1) gameboardInfo.possibleAttacks.push(i);
-    return gameboardInfo;
+    [...hitCoordinates, ...notPossibleAttacks].forEach((coordinate) => {
+      const index = gameboardInfo.possibleAttacks.indexOf(coordinate);
+      gameboardInfo.possibleAttacks.splice(index, 1);
+    });
+    hitCoordinates.forEach((coordinate) => gameboardInfo.hits.push(coordinate));
+
+    CreateGameboard.mockReturnValue({
+      getGameboardInfo: () => gameboardInfo,
+      recieveAttack: (args) => recieveAttackMockFn(args),
+    });
   };
 
   it('should call gameboard.recieveAttack', () => {
-    CreateGameboard.mockReturnValue({
-      getGameboardInfo: () => initialGameboardInfo(),
-      recieveAttack: (args) => recieveAttackMockFn(args),
-    });
+    setUpGameboard([], []);
 
     const computer = CreateComputer(CreateGameboard());
     computer.sendAttack();
@@ -34,10 +40,7 @@ describe('the computer when sendAttack is called', () => {
   });
 
   it('when there are no hits should return both even or odd coordinates', () => {
-    CreateGameboard.mockReturnValue({
-      getGameboardInfo: () => initialGameboardInfo(),
-      recieveAttack: (args) => recieveAttackMockFn(args),
-    });
+    setUpGameboard([], []);
 
     const computer = CreateComputer(CreateGameboard());
     computer.sendAttack();
@@ -50,32 +53,8 @@ describe('the computer when sendAttack is called', () => {
   });
 
   describe('when there is one hit', () => {
-    const setUpSingleHit = (hitCoordinate, notPossibleAttacks) => {
-      const gameboardInfo = {
-        missedAttacks: [],
-        sunkenShips: [],
-        hits: [],
-        possibleAttacks: [],
-        allShipsSunk: false,
-      };
-      for (let i = 0; i < 64; i += 1) {
-        if (i === hitCoordinate) i += 1;
-        gameboardInfo.possibleAttacks.push(i);
-      }
-      notPossibleAttacks.forEach((coordinate) => {
-        const index = gameboardInfo.possibleAttacks.indexOf(coordinate);
-        gameboardInfo.possibleAttacks.splice(index, 1);
-      });
-      gameboardInfo.hits.push(hitCoordinate);
-
-      CreateGameboard.mockReturnValue({
-        getGameboardInfo: () => gameboardInfo,
-        recieveAttack: (args) => recieveAttackMockFn(args),
-      });
-    };
-
     it('should return an adjacent coordinate', () => {
-      setUpSingleHit(12, []);
+      setUpGameboard([12], []);
 
       const computer = CreateComputer(CreateGameboard());
       computer.sendAttack();
@@ -87,7 +66,7 @@ describe('the computer when sendAttack is called', () => {
     });
 
     it('should return only possible adjacent coordinates', () => {
-      setUpSingleHit(12, [11, 13, 4]);
+      setUpGameboard([12], [11, 13, 4]);
       const computer = CreateComputer(CreateGameboard());
       computer.sendAttack();
 
@@ -97,7 +76,7 @@ describe('the computer when sendAttack is called', () => {
 
     describe('should return all adjacent coordinates but', () => {
       it('left side because the hit is on the left edge', () => {
-        setUpSingleHit(16, []);
+        setUpGameboard([16], []);
         const computer = CreateComputer(CreateGameboard());
 
         for (let i = 0; i < 20; i += 1) {
@@ -111,7 +90,7 @@ describe('the computer when sendAttack is called', () => {
       });
 
       it('right side because the hit is on the right edge', () => {
-        setUpSingleHit(31, []);
+        setUpGameboard([31], []);
         const computer = CreateComputer(CreateGameboard());
 
         for (let i = 0; i < 20; i += 1) {
@@ -125,7 +104,7 @@ describe('the computer when sendAttack is called', () => {
       });
 
       it('upper side because the hit is on the top edge', () => {
-        setUpSingleHit(4, []);
+        setUpGameboard([4], []);
         const computer = CreateComputer(CreateGameboard());
 
         for (let i = 0; i < 20; i += 1) {
@@ -139,7 +118,7 @@ describe('the computer when sendAttack is called', () => {
       });
 
       it('lower side because the hit is on the bottom edge', () => {
-        setUpSingleHit(62, []);
+        setUpGameboard([62], []);
         const computer = CreateComputer(CreateGameboard());
 
         for (let i = 0; i < 20; i += 1) {
@@ -150,6 +129,84 @@ describe('the computer when sendAttack is called', () => {
           const adjacentCoordinates = [61, 63, 54];
           expect(adjacentCoordinates.includes(attackedCoordinate)).toBe(true);
         }
+      });
+    });
+  });
+
+  describe('when there is a non-ending line of hits', () => {
+    describe('should return a coordinate that adds to that line', () => {
+      it('horizontally', () => {
+        setUpGameboard([12, 13], []);
+        const computer = CreateComputer(CreateGameboard());
+        computer.sendAttack();
+
+        const attackedCoordinate = recieveAttackMockFn.mock.calls[0][0];
+        expect(typeof attackedCoordinate).toBe('number');
+        const coordinateAddingToLine = [11, 14];
+        expect(coordinateAddingToLine.includes(attackedCoordinate)).toBe(true);
+      });
+
+      it('vertically', () => {
+        setUpGameboard([26, 34], []);
+        const computer = CreateComputer(CreateGameboard());
+        computer.sendAttack();
+
+        const attackedCoordinate = recieveAttackMockFn.mock.calls[0][0];
+        expect(typeof attackedCoordinate).toBe('number');
+        const coordinateAddingToLine = [18, 42];
+        expect(coordinateAddingToLine.includes(attackedCoordinate)).toBe(true);
+      });
+    });
+
+    describe('should return a coordinate that adds to that line and is possible', () => {
+      it('horizontally', () => {
+        setUpGameboard([12, 13], [11]);
+        const computer = CreateComputer(CreateGameboard());
+
+        for (let i = 0; i < 5; i += 1) {
+          computer.sendAttack();
+
+          const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+          expect(attackedCoordinate).toBe(14);
+        }
+      });
+
+      it('vertically', () => {
+        setUpGameboard([26, 34], [42]);
+        const computer = CreateComputer(CreateGameboard());
+
+        for (let i = 0; i < 5; i += 1) {
+          computer.sendAttack();
+
+          const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+          expect(attackedCoordinate).toBe(18);
+        }
+      });
+
+      describe('should return a coordinate that adds to that line and is', () => {
+        it('not on another row', () => {
+          setUpGameboard([8, 9], []);
+          const computer = CreateComputer(CreateGameboard());
+
+          for (let i = 0; i < 5; i += 1) {
+            computer.sendAttack();
+
+            const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+            expect(attackedCoordinate).toBe(10);
+          }
+        });
+
+        it('not on gameboard', () => {
+          setUpGameboard([3, 11], []);
+          const computer = CreateComputer(CreateGameboard());
+
+          for (let i = 0; i < 5; i += 1) {
+            computer.sendAttack();
+
+            const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+            expect(attackedCoordinate).toBe(19);
+          }
+        });
       });
     });
   });
