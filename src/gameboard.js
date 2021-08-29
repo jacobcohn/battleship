@@ -42,6 +42,7 @@ const CreateGameboard = () => {
     if (isShipHit(coordinate)) {
       const hitShip = findShip(coordinate);
       hitShip.hit(coordinate);
+
       gameboardInfo.hits.push(coordinate);
       if (hitShip.isSunk()) {
         gameboardInfo.sunkenShips.push(hitShip.coordinates);
