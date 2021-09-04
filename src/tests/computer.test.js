@@ -9,7 +9,7 @@ describe('the computer when sendAttack is called', () => {
     recieveAttackMockFn = jest.fn();
   });
 
-  const setUpGameboard = (hitCoordinates, notPossibleAttacks) => {
+  const getGameboardInfo = (hitCoordinates, notPossibleAttacks) => {
     const gameboardInfo = {
       missedAttacks: [],
       sunkenShips: [],
@@ -24,8 +24,26 @@ describe('the computer when sendAttack is called', () => {
     });
     hitCoordinates.forEach((coordinate) => gameboardInfo.hits.push(coordinate));
 
+    return gameboardInfo;
+  };
+
+  const setUpGameboard = (hitCoordinates, notPossibleAttacks) => {
     CreateGameboard.mockReturnValue({
-      getGameboardInfo: () => gameboardInfo,
+      getGameboardInfo: () => getGameboardInfo(hitCoordinates, notPossibleAttacks),
+      recieveAttack: (args) => recieveAttackMockFn(args),
+    });
+  };
+
+  const setUpGameboardWithAdditionalHits = (hitCoordinates, notPossibleAttacks, additionalHits) => {
+    const gameboardInfoMockFn = jest.fn();
+    for (let i = 0; i <= additionalHits.length; i += 1) {
+      gameboardInfoMockFn.mockReturnValueOnce(
+        getGameboardInfo([...hitCoordinates, ...additionalHits.slice(0, i)], notPossibleAttacks),
+      );
+    }
+
+    CreateGameboard.mockReturnValue({
+      getGameboardInfo: () => gameboardInfoMockFn(),
       recieveAttack: (args) => recieveAttackMockFn(args),
     });
   };
@@ -286,6 +304,31 @@ describe('the computer when sendAttack is called', () => {
           }
         });
       });
+    });
+  });
+
+  describe('when there is more than a single line of hits', () => {
+    it('should add a third coordinate to the new line', () => {
+      setUpGameboardWithAdditionalHits([10, 11], [9, 12, 2, 3, 19], [18]);
+      const computer = CreateComputer(CreateGameboard());
+      computer.sendAttack();
+      computer.sendAttack();
+
+      const firstAttackedCoordinate = recieveAttackMockFn.mock.calls[0][0];
+      expect(firstAttackedCoordinate).toBe(18);
+      const secondAttackedCoordinate = recieveAttackMockFn.mock.calls[1][0];
+      expect(secondAttackedCoordinate).toBe(26);
+    });
+
+    it('should add a fourth coordinate to the new line', () => {
+      setUpGameboardWithAdditionalHits([13, 21], [5, 29, 12, 14, 22], [20, 19]);
+      const computer = CreateComputer(CreateGameboard());
+      computer.sendAttack();
+      computer.sendAttack();
+      computer.sendAttack();
+
+      const thirdAttackedCoordinate = recieveAttackMockFn.mock.calls[2][0];
+      expect(thirdAttackedCoordinate).toBe(18);
     });
   });
 });

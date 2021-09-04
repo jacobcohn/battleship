@@ -33,7 +33,21 @@ const CreateComputer = (enemyGameboard) => {
     return possibleAdjacentCoordinates[index];
   };
 
-  const sortSingleLine = (gameboardInfo) => gameboardInfo.hits.sort((a, b) => a - b);
+  const sortArray = (hitsArray) => hitsArray.sort((a, b) => a - b);
+
+  const isSingleLine = (hitsArray) => {
+    const sortedHitsArray = sortArray(hitsArray);
+    const initialDifference = sortedHitsArray[1] - sortedHitsArray[0];
+
+    let status = true;
+    let currentCoordinate = sortedHitsArray[0];
+    sortedHitsArray.forEach((coordinate) => {
+      if (coordinate !== currentCoordinate) status = false;
+      currentCoordinate += initialDifference;
+    });
+
+    return status;
+  };
 
   const getPossibleOnLineCoordinates = (lineOfHits, possibleAttacks) => {
     const nextCoordinateDistance = lineOfHits[1] - lineOfHits[0];
@@ -81,15 +95,35 @@ const CreateComputer = (enemyGameboard) => {
     return possibleAdjacentCoordinates[index][0];
   };
 
+  const resetLinesOfHitsInfo = () => {
+    linesOfHitsInfo.moreThanOneLine = false;
+    linesOfHitsInfo.currentLine = null;
+  };
+
+  const singleLineCoordinate = (gameboardInfo) => {
+    const lineOfHits = sortArray(gameboardInfo.hits);
+    const onLineCoordinates = getPossibleOnLineCoordinates(lineOfHits, gameboardInfo.possibleAttacks);
+    if (onLineCoordinates.length) return addCoordinateToLine(onLineCoordinates);
+    return adjacentAndPerpendicularCoordinate(lineOfHits, gameboardInfo.possibleAttacks);
+  };
+
+  const multipleLinesCoordinate = (gameboardInfo) => {
+    const lineOfHits = sortArray(linesOfHitsInfo.currentLine);
+    const onLineCoordinates = getPossibleOnLineCoordinates(lineOfHits, gameboardInfo.possibleAttacks);
+    const finalCoordinate = addCoordinateToLine(onLineCoordinates);
+    linesOfHitsInfo.currentLine.push(finalCoordinate);
+    return finalCoordinate;
+  };
+
   const getCoordinate = () => {
     const gameboardInfo = enemyGameboard.getGameboardInfo();
     if (!gameboardInfo.hits.length) return randomCoordinate(gameboardInfo);
     if (gameboardInfo.hits.length === 1) return secondCoordinate(gameboardInfo);
-
-    const lineOfHits = sortSingleLine(gameboardInfo);
-    const onLineCoordinates = getPossibleOnLineCoordinates(lineOfHits, gameboardInfo.possibleAttacks);
-    if (onLineCoordinates.length) return addCoordinateToLine(onLineCoordinates);
-    return adjacentAndPerpendicularCoordinate(lineOfHits, gameboardInfo.possibleAttacks);
+    if (isSingleLine(gameboardInfo.hits)) {
+      resetLinesOfHitsInfo();
+      return singleLineCoordinate(gameboardInfo);
+    }
+    return multipleLinesCoordinate(gameboardInfo);
   };
 
   const sendAttack = () => {
