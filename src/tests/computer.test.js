@@ -133,7 +133,7 @@ describe('the computer when sendAttack is called', () => {
     });
   });
 
-  describe('when there is a non-ending line of hits', () => {
+  describe('when there is a line of hits that can be added to', () => {
     describe('should return a coordinate that adds to that line', () => {
       it('horizontally', () => {
         setUpGameboard([12, 13], []);
@@ -184,7 +184,7 @@ describe('the computer when sendAttack is called', () => {
       });
 
       describe('should return a coordinate that adds to that line and is', () => {
-        it('not on another row', () => {
+        it('on the same row', () => {
           setUpGameboard([8, 9], []);
           const computer = CreateComputer(CreateGameboard());
 
@@ -196,7 +196,7 @@ describe('the computer when sendAttack is called', () => {
           }
         });
 
-        it('not on gameboard', () => {
+        it('on gameboard', () => {
           setUpGameboard([3, 11], []);
           const computer = CreateComputer(CreateGameboard());
 
@@ -205,6 +205,84 @@ describe('the computer when sendAttack is called', () => {
 
             const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
             expect(attackedCoordinate).toBe(19);
+          }
+        });
+      });
+    });
+  });
+
+  describe('when there is a line of hits that cannot be added to', () => {
+    // this means that some ships are parallel to each other and adjacent
+
+    describe('should return a coordinate that adds to a new line', () => {
+      it('when new line is horizontal', () => {
+        setUpGameboard([12, 20], [4, 28]);
+        const computer = CreateComputer(CreateGameboard());
+        computer.sendAttack();
+
+        const possibleNextCoordinates = [11, 13, 19, 21];
+        const attackedCoordinate = recieveAttackMockFn.mock.calls[0][0];
+        expect(possibleNextCoordinates.includes(attackedCoordinate)).toBe(true);
+      });
+
+      it('when new line is vertical', () => {
+        setUpGameboard([10, 11], [9, 12]);
+        const computer = CreateComputer(CreateGameboard());
+        computer.sendAttack();
+
+        const possibleNextCoordinates = [2, 3, 18, 19];
+        const attackedCoordinate = recieveAttackMockFn.mock.calls[0][0];
+        expect(possibleNextCoordinates.includes(attackedCoordinate)).toBe(true);
+      });
+    });
+
+    describe('should return a coordinate that adds to a new line and is possible', () => {
+      it('when new line is horizontal', () => {
+        setUpGameboard([12, 20], [4, 28, 11, 13, 19]);
+        const computer = CreateComputer(CreateGameboard());
+
+        for (let i = 0; i < 5; i += 1) {
+          computer.sendAttack();
+
+          const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+          expect(attackedCoordinate).toBe(21);
+        }
+      });
+
+      it('when new line is vertical', () => {
+        setUpGameboard([10, 11], [9, 12, 2, 3, 19]);
+        const computer = CreateComputer(CreateGameboard());
+
+        for (let i = 0; i < 5; i += 1) {
+          computer.sendAttack();
+
+          const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+          expect(attackedCoordinate).toBe(18);
+        }
+      });
+
+      describe('should return a coordinate that adds to a new line and is', () => {
+        it('on the same row', () => {
+          setUpGameboard([8, 16], [0, 24, 9]);
+          const computer = CreateComputer(CreateGameboard());
+
+          for (let i = 0; i < 5; i += 1) {
+            computer.sendAttack();
+
+            const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+            expect(attackedCoordinate).toBe(17);
+          }
+        });
+
+        it('on gameboard', () => {
+          setUpGameboard([2, 3], [1, 4, 10]);
+          const computer = CreateComputer(CreateGameboard());
+
+          for (let i = 0; i < 5; i += 1) {
+            computer.sendAttack();
+
+            const attackedCoordinate = recieveAttackMockFn.mock.calls[i][0];
+            expect(attackedCoordinate).toBe(11);
           }
         });
       });

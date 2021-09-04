@@ -1,5 +1,9 @@
 const CreateComputer = (enemyGameboard) => {
   const remainder = Math.floor(Math.random());
+  const linesOfHitsInfo = {
+    moreThanOneLine: false,
+    currentLine: null,
+  };
 
   const randomCoordinate = (gameboardInfo) => {
     const possibleAttacksWithRemainder = gameboardInfo.possibleAttacks.filter(
@@ -29,29 +33,63 @@ const CreateComputer = (enemyGameboard) => {
     return possibleAdjacentCoordinates[index];
   };
 
-  const addCoordinateToLine = (gameboardInfo) => {
-    const sortedHits = gameboardInfo.hits.sort((a, b) => a - b);
-    const nextCoordinateDistance = sortedHits[1] - sortedHits[0];
+  const sortSingleLine = (gameboardInfo) => gameboardInfo.hits.sort((a, b) => a - b);
+
+  const getPossibleOnLineCoordinates = (lineOfHits, possibleAttacks) => {
+    const nextCoordinateDistance = lineOfHits[1] - lineOfHits[0];
     const onLineCoordinates = [];
 
-    onLineCoordinates.push(sortedHits[0] - nextCoordinateDistance);
-    onLineCoordinates.push(sortedHits[sortedHits.length - 1] + nextCoordinateDistance);
+    onLineCoordinates.push(lineOfHits[0] - nextCoordinateDistance);
+    onLineCoordinates.push(lineOfHits[lineOfHits.length - 1] + nextCoordinateDistance);
 
     const possibleOnLineCoordinates = onLineCoordinates.filter(
       (coordinate) =>
-        gameboardInfo.possibleAttacks.includes(coordinate) &&
-        (nextCoordinateDistance === 8 || determineRow(coordinate) === determineRow(sortedHits[0])),
+        possibleAttacks.includes(coordinate) &&
+        (nextCoordinateDistance === 8 || determineRow(coordinate) === determineRow(lineOfHits[0])),
     );
 
+    return possibleOnLineCoordinates;
+  };
+
+  const addCoordinateToLine = (possibleOnLineCoordinates) => {
     const index = Math.floor(Math.random() * possibleOnLineCoordinates.length);
     return possibleOnLineCoordinates[index];
+  };
+
+  const adjacentAndPerpendicularCoordinate = (lineOfHits, possibleAttacks) => {
+    const distanceBetweenCurrentLine = lineOfHits[1] - lineOfHits[0];
+    let distanceBetweenNewLine;
+    if (distanceBetweenCurrentLine !== 1) {
+      distanceBetweenNewLine = 1;
+    } else distanceBetweenNewLine = 8;
+
+    const adjacentCoordinates = [];
+    lineOfHits.forEach((coordinate) => {
+      adjacentCoordinates.push([coordinate - distanceBetweenNewLine, coordinate]);
+      adjacentCoordinates.push([coordinate + distanceBetweenNewLine, coordinate]);
+    });
+
+    const possibleAdjacentCoordinates = adjacentCoordinates.filter(
+      (array) =>
+        possibleAttacks.includes(array[0]) &&
+        (distanceBetweenNewLine === 8 || determineRow(array[0]) === determineRow(array[1])),
+    );
+
+    const index = Math.floor(Math.random() * possibleAdjacentCoordinates.length);
+    linesOfHitsInfo.moreThanOneLine = true;
+    linesOfHitsInfo.currentLine = possibleAdjacentCoordinates[index];
+    return possibleAdjacentCoordinates[index][0];
   };
 
   const getCoordinate = () => {
     const gameboardInfo = enemyGameboard.getGameboardInfo();
     if (!gameboardInfo.hits.length) return randomCoordinate(gameboardInfo);
     if (gameboardInfo.hits.length === 1) return secondCoordinate(gameboardInfo);
-    return addCoordinateToLine(gameboardInfo);
+
+    const lineOfHits = sortSingleLine(gameboardInfo);
+    const onLineCoordinates = getPossibleOnLineCoordinates(lineOfHits, gameboardInfo.possibleAttacks);
+    if (onLineCoordinates.length) return addCoordinateToLine(onLineCoordinates);
+    return adjacentAndPerpendicularCoordinate(lineOfHits, gameboardInfo.possibleAttacks);
   };
 
   const sendAttack = () => {
