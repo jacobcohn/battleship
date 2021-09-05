@@ -1,0 +1,54 @@
+body {
+  background: #004A8F;
+  color: white;
+  width: 100vw;
+  height: 100vh;
+  padding: 0px;
+  margin: 0px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#titleDiv {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#titleContent {
+  font-size: 80px;
+  margin-bottom: 10px;
+}
+
+#bothBoardsDiv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boardDiv {
+  margin: 0px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.boardTitle {
+  font-size: 40px;
+}
+
+.board {
+  background-color: white;
+  width: 500px;
+  height: 500px;
+}
