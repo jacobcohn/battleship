@@ -1,4 +1,4 @@
-const randomize = () => {
+const randomizeShips = () => {
   const shipsArray = [];
   const availableCoordinates = [];
   for (let i = 0; i < 64; i += 1) availableCoordinates.push(i);
@@ -48,4 +48,4 @@ const randomize = () => {
   return shipsArray;
 };
 
-export default randomize;
+export default randomizeShips;

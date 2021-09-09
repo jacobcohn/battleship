@@ -130,8 +130,9 @@ const CreateComputer = (enemyGameboard) => {
     const coordinate = getCoordinate();
     enemyGameboard.recieveAttack(coordinate);
   };
+  const didWin = () => enemyGameboard.getGameboardInfo().areShipsSunk;
 
-  return { sendAttack };
+  return { sendAttack, didWin };
 };
 
 export default CreateComputer;

@@ -1,8 +1,8 @@
-import randomize from '../randomize';
+import randomizeShips from '../randomizeShips';
 
 describe('randomize should return array with all ships', () => {
   it('having the correct length', () => {
-    const shipsArray = randomize();
+    const shipsArray = randomizeShips();
 
     const shipsLengths = [];
     shipsArray.forEach((ship) => shipsLengths.push(ship.length));
@@ -11,7 +11,7 @@ describe('randomize should return array with all ships', () => {
   });
 
   it('having different possible coordinates', () => {
-    const shipsArray = randomize();
+    const shipsArray = randomizeShips();
 
     const coordinates = [];
     shipsArray.forEach((ship) => {
@@ -37,7 +37,7 @@ describe('randomize should return array with all ships', () => {
   });
 
   it('being in a straight line', () => {
-    const shipsArray = randomize();
+    const shipsArray = randomizeShips();
 
     const determineRow = (coordinate) => Math.floor(coordinate / 8);
     const determineColumn = (coordinate) => coordinate % 8;
