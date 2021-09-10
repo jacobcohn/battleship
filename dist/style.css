@@ -52,3 +52,63 @@ body {
   width: 500px;
   height: 500px;
 }
+
+/* gameOverModal */
+.notVisible {
+  display: none;
+}
+
+.visible {
+  display: flex;
+}
+
+#gOMBackground {
+  background: rgb(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+#gOMContent {
+  background: #004A8F;
+  color: white;
+  min-width: 250px;
+  min-height: 100px;
+  padding: 20px;
+  border-radius: 10px;
+  border: white 3px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#gOMTitleContent {
+  font-size: 60px;
+  margin: 20px;
+}
+
+#gOMNewGameDiv {
+  margin: 10px;
+  width: 100%;
+  height: 60px;
+}
+
+#gOMNewGameBtn {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 35px;
+  color: #004A8F;
+  background: white;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 5px;
+}
+
+#gOMNewGameBtn:hover {
+  background: rgba(255, 255, 255, 0.9);
+}

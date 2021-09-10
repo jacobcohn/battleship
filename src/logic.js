@@ -26,7 +26,7 @@ const logic = (() => {
   const gameLoop = (playerAttackCoordinate) => {
     player.sendAttack(playerAttackCoordinate);
     if (player.didWin()) {
-      dom.displayWinner('You');
+      dom.displayWinner('Player');
       return;
     }
     computer.sendAttack();
