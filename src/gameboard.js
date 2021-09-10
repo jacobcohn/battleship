@@ -1,10 +1,8 @@
 import CreateShip from './ship';
 
 const CreateGameboard = () => {
-  const ships = [];
-  const addShip = (coordinates) => ships.push(CreateShip(coordinates));
-
   const gameboardInfo = {
+    ships: [],
     missedAttacks: [],
     sunkenShips: [],
     hits: [],
@@ -13,6 +11,12 @@ const CreateGameboard = () => {
   };
   for (let i = 0; i < 64; i += 1) gameboardInfo.possibleAttacks.push(i);
   const getGameboardInfo = () => gameboardInfo;
+
+  const ships = [];
+  const addShip = (coordinates) => {
+    ships.push(CreateShip(coordinates));
+    gameboardInfo.ships.push(coordinates);
+  };
 
   const isShipHit = (coordinate) => {
     let status = false;

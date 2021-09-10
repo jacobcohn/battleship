@@ -46,6 +46,27 @@ describe('the gameboard', () => {
   });
 
   describe('when get gameboard info is called', () => {
+    describe('ships', () => {
+      it('should return empty array when no ships in gameboard', () => {
+        const gameboard = CreateGameboard();
+        expect(gameboard.getGameboardInfo().ships).toEqual([]);
+      });
+
+      it('should return array of all ships in gamebaord', () => {
+        const firstCoordinates = [5, 6, 7];
+        const secondCoordinates = [9, 17];
+        CreateShip.mockReturnValueOnce({ coordinates: firstCoordinates, hit: () => {}, isSunk: () => false });
+        CreateShip.mockReturnValueOnce({ coordinates: secondCoordinates, hit: () => {}, isSunk: () => false });
+
+        const gameboard = CreateGameboard();
+        gameboard.addShip(firstCoordinates);
+        gameboard.addShip(secondCoordinates);
+
+        expect(gameboard.getGameboardInfo().ships).toContain(firstCoordinates);
+        expect(gameboard.getGameboardInfo().ships).toContain(secondCoordinates);
+      });
+    });
+
     describe('missed attacks', () => {
       it('should return 0 missed attacks if 0 attacks missed', () => {
         const coordinates = [5, 6, 7];
