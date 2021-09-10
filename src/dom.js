@@ -1,7 +1,28 @@
 const dom = (() => {
-  const displayWinner = () => {};
+  const fixCanvasHeights = () => {
+    const playerBoard = document.getElementById('playerBoard');
+    playerBoard.height = playerBoard.width;
+    const computerBoard = document.getElementById('computerBoard');
+    computerBoard.height = computerBoard.width;
+  };
 
-  const init = () => {};
+  const displayBoards = () => {
+    // code here
+  };
+
+  const addEventListeners = () => {
+    // code here
+  };
+
+  const displayWinner = () => {
+    // code here
+  };
+
+  const init = () => {
+    fixCanvasHeights();
+    displayBoards();
+    addEventListeners();
+  };
 
   return { displayWinner, init };
 })();
