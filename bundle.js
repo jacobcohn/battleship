@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst dom = (() => {\n  const displayWinner = () => {};\n\n  const init = () => {};\n\n  return { displayWinner, init };\n})();\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dom);\n\n\n//# sourceURL=webpack://battleship/./src/dom.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst dom = (() => {\n  const fixCanvasHeights = () => {\n    const playerBoard = document.getElementById('playerBoard');\n    playerBoard.height = playerBoard.width;\n    const computerBoard = document.getElementById('computerBoard');\n    computerBoard.height = computerBoard.width;\n  };\n\n  const displayBoards = () => {\n    // code here\n  };\n\n  const addEventListeners = () => {\n    // code here\n  };\n\n  const displayWinner = () => {\n    // code here\n  };\n\n  const init = () => {\n    fixCanvasHeights();\n    displayBoards();\n    addEventListeners();\n  };\n\n  return { displayWinner, init };\n})();\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dom);\n\n\n//# sourceURL=webpack://battleship/./src/dom.js?");
 
 /***/ }),
 
