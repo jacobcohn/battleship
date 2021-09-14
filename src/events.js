@@ -4,6 +4,8 @@ import dom from './dom';
 const events = (() => {
   const computerBoard = document.getElementById('computerBoard');
 
+  // resize
+
   const convertXYtoCoordinate = (squareLength, x, y) => {
     const gridLength = squareLength / 8;
     const row = Math.floor(Math.abs(y) / gridLength);
@@ -27,6 +29,12 @@ const events = (() => {
     });
   };
 
+  const exitComputerBoard = () => {
+    computerBoard.addEventListener('mouseout', () => {
+      dom.displayBoards();
+    });
+  };
+
   const clickComputerBoard = () => {
     computerBoard.addEventListener('click', (event) => {
       const coordinate = getCoordinate(event);
@@ -42,6 +50,7 @@ const events = (() => {
 
   const init = () => {
     hoverComputerBoard();
+    exitComputerBoard();
     clickComputerBoard();
     clickNewGameBtn();
   };
