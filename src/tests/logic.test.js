@@ -26,6 +26,10 @@ describe('logic', () => {
       expect(CreateGameboard.mock.calls.length).toBe(2);
     });
 
+    it('should call dom.recieveGameboards once', () => {
+      expect(dom.recieveGameboards.mock.calls.length).toBe(1);
+    });
+
     it('should call randomizeShips twice', () => {
       expect(randomizeShips.mock.calls.length).toBe(2);
     });
@@ -39,29 +43,43 @@ describe('logic', () => {
     });
   });
 
+  describe('when logic.isCoordinatePossibleAttack', () => {
+    beforeEach(() => {
+      CreateGameboard.mockReturnValue({
+        addShip: () => {},
+        getGameboardInfo: () => ({ possibleAttacks: [0] }),
+      });
+      logic.init();
+    });
+
+    it('should return true when it is possible', () => {
+      expect(logic.isCoordinatePossibleAttack(0)).toBe(true);
+    });
+
+    it('should return false when it is not possible', () => {
+      expect(logic.isCoordinatePossibleAttack(1)).toBe(false);
+    });
+  });
+
   describe('when logic.gameLoop is called', () => {
     describe('should call dom.displayWinner', () => {
       it('when player has won', () => {
-        const displayWinnerMockFn = jest.fn();
-        dom.displayWinner.mockImplementation(displayWinnerMockFn());
         CreatePlayer.mockReturnValue({ sendAttack: () => {}, didWin: () => true });
 
         logic.init();
         logic.gameLoop();
 
-        expect(displayWinnerMockFn).toHaveBeenCalled();
+        expect(dom.displayWinner).toHaveBeenCalled();
       });
 
       it('when computer has won', () => {
-        const displayWinnerMockFn = jest.fn();
-        dom.displayWinner.mockImplementation(displayWinnerMockFn());
         CreatePlayer.mockReturnValue({ sendAttack: () => {}, didWin: () => false });
         CreateComputer.mockReturnValue({ sendAttack: () => {}, didWin: () => true });
 
         logic.init();
         logic.gameLoop();
 
-        expect(displayWinnerMockFn).toHaveBeenCalled();
+        expect(dom.displayWinner).toHaveBeenCalled();
       });
     });
 

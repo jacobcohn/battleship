@@ -1,17 +1,34 @@
+const boards = (() => {
+  const displayPlayer = () => {};
+  const displayComputer = () => {};
+
+  return { displayPlayer, displayComputer };
+})();
+
 const dom = (() => {
-  const fixCanvasHeights = () => {
+  let playerGameboard;
+  let computerGameboard;
+  let canvasLength;
+
+  const recieveGameboards = (givenPlayerGameboard, givenComputerGameboard) => {
+    playerGameboard = givenPlayerGameboard;
+    computerGameboard = givenComputerGameboard;
+  };
+
+  const fixCanvasDimensions = () => {
     const playerBoard = document.getElementById('playerBoard');
     playerBoard.height = playerBoard.width;
     const computerBoard = document.getElementById('computerBoard');
     computerBoard.height = computerBoard.width;
+
+    canvasLength = playerBoard.height;
   };
+
+  const hoverEffect = () => {};
 
   const displayBoards = () => {
-    // code here
-  };
-
-  const addEventListeners = () => {
-    // code here
+    boards.displayPlayer(playerGameboard, canvasLength);
+    boards.displayComputer(computerGameboard, canvasLength);
   };
 
   const displayWinner = () => {
@@ -19,12 +36,11 @@ const dom = (() => {
   };
 
   const init = () => {
-    fixCanvasHeights();
+    fixCanvasDimensions();
     displayBoards();
-    addEventListeners();
   };
 
-  return { displayWinner, init };
+  return { recieveGameboards, displayBoards, hoverEffect, displayWinner, init };
 })();
 
 export default dom;
