@@ -54,15 +54,16 @@ const boards = (() => {
 
   const addXForHits = (canvas, ctx, hits) => {
     const gridLength = canvas.width / 8;
+    const ratio = 0.03;
 
     hits.forEach((coordinate) => {
       const row = Math.floor(coordinate / 8);
       const column = coordinate % 8;
 
-      const beginningRow = row * gridLength;
-      const endingRow = (row + 1) * gridLength;
-      const beginningColumn = column * gridLength;
-      const endingColumn = (column + 1) * gridLength;
+      const beginningRow = row * gridLength + ratio * gridLength;
+      const endingRow = (row + 1) * gridLength - ratio * gridLength;
+      const beginningColumn = column * gridLength + ratio * gridLength;
+      const endingColumn = (column + 1) * gridLength - ratio * gridLength;
 
       ctx.beginPath();
       ctx.moveTo(beginningColumn, beginningRow);
@@ -70,7 +71,7 @@ const boards = (() => {
       ctx.moveTo(beginningColumn, endingRow);
       ctx.lineTo(endingColumn, beginningRow);
       ctx.lineWidth = 2;
-      ctx.strokeStyle = 'red';
+      ctx.strokeStyle = '#DC4151';
       ctx.stroke();
     });
   };
@@ -80,8 +81,11 @@ const boards = (() => {
     const column = startingCoordinate % 8;
 
     ctx.beginPath();
+    ctx.rect(column * gridLength, row * gridLength, gridLength * shipLength, gridLength);
     ctx.fillStyle = color;
-    ctx.fillRect(column * gridLength, row * gridLength, gridLength * shipLength, gridLength);
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
     ctx.stroke();
   };
 
@@ -90,8 +94,11 @@ const boards = (() => {
     const column = startingCoordinate % 8;
 
     ctx.beginPath();
+    ctx.rect(column * gridLength, row * gridLength, gridLength, gridLength * shipLength);
     ctx.fillStyle = color;
-    ctx.fillRect(column * gridLength, row * gridLength, gridLength, gridLength * shipLength);
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
     ctx.stroke();
   };
 
@@ -107,7 +114,7 @@ const boards = (() => {
     const gridLength = canvas.width / 8;
 
     ships.forEach((coordinates) => {
-      addShipWithColor(gridLength, ctx, coordinates, '#004A8F');
+      addShipWithColor(gridLength, ctx, coordinates, '#70CBFF');
     });
   };
 
@@ -115,7 +122,7 @@ const boards = (() => {
     const gridLength = canvas.width / 8;
 
     sunkenShips.forEach((coordinates) => {
-      addShipWithColor(gridLength, ctx, coordinates, 'red');
+      addShipWithColor(gridLength, ctx, coordinates, '#DC4151');
     });
   };
 
@@ -125,10 +132,10 @@ const boards = (() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     addDotsForMisses(canvas, ctx, gameboard.getGameboardInfo().missedAttacks);
+    addGridLines(canvas, ctx);
     addBlueShipsForShips(canvas, ctx, gameboard.getGameboardInfo().ships);
     addXForHits(canvas, ctx, gameboard.getGameboardInfo().hits);
     addRedShipsForSunkenShips(canvas, ctx, gameboard.getGameboardInfo().sunkenShips);
-    addGridLines(canvas, ctx);
   };
 
   const displayComputer = (gameboard, hoverCoordinate) => {
@@ -139,8 +146,8 @@ const boards = (() => {
     addHoverEffect(canvas, ctx, hoverCoordinate);
     addDotsForMisses(canvas, ctx, gameboard.getGameboardInfo().missedAttacks);
     addXForHits(canvas, ctx, gameboard.getGameboardInfo().hits);
-    addRedShipsForSunkenShips(canvas, ctx, gameboard.getGameboardInfo().sunkenShips);
     addGridLines(canvas, ctx);
+    addRedShipsForSunkenShips(canvas, ctx, gameboard.getGameboardInfo().sunkenShips);
   };
 
   return { displayPlayer, displayComputer };

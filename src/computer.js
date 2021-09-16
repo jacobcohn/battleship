@@ -1,16 +1,12 @@
 const CreateComputer = (enemyGameboard) => {
-  const remainder = Math.floor(Math.random());
   const linesOfHitsInfo = {
     moreThanOneLine: false,
     currentLine: null,
   };
 
   const randomCoordinate = (gameboardInfo) => {
-    const possibleAttacksWithRemainder = gameboardInfo.possibleAttacks.filter(
-      (coordinate) => coordinate % 2 === remainder,
-    );
-    const index = Math.floor(Math.random() * possibleAttacksWithRemainder.length);
-    return possibleAttacksWithRemainder[index];
+    const index = Math.floor(Math.random() * gameboardInfo.possibleAttacks.length);
+    return gameboardInfo.possibleAttacks[index];
   };
 
   const determineRow = (coordinate) => Math.floor(coordinate / 8);

@@ -57,19 +57,6 @@ describe('the computer when sendAttack is called', () => {
     expect(recieveAttackMockFn).toHaveBeenCalled();
   });
 
-  it('when there are no hits should return both even or odd coordinates', () => {
-    setUpGameboard([], []);
-
-    const computer = CreateComputer(CreateGameboard());
-    computer.sendAttack();
-    const remainder = recieveAttackMockFn.mock.calls[0][0] % 2;
-
-    for (let i = 1; i <= 10; i += 1) {
-      computer.sendAttack();
-      expect(recieveAttackMockFn.mock.calls[i][0] % 2).toBe(remainder);
-    }
-  });
-
   describe('when there is one hit', () => {
     it('should return an adjacent coordinate', () => {
       setUpGameboard([12], []);
