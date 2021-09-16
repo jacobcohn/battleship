@@ -322,7 +322,7 @@ describe('the computer when sendAttack is called', () => {
   describe('when didWin is called', () => {
     it('should return true if won', () => {
       const getGameboardInfoMockFn = jest.fn();
-      getGameboardInfoMockFn.mockReturnValue({ areShipsSunk: true });
+      getGameboardInfoMockFn.mockReturnValue({ allShipsSunk: true });
       CreateGameboard.mockReturnValue({ getGameboardInfo: () => getGameboardInfoMockFn() });
 
       const player = CreateComputer(CreateGameboard());
@@ -332,7 +332,7 @@ describe('the computer when sendAttack is called', () => {
 
     it('should return false if lost', () => {
       const getGameboardInfoMockFn = jest.fn();
-      getGameboardInfoMockFn.mockReturnValue({ areShipsSunk: false });
+      getGameboardInfoMockFn.mockReturnValue({ allShipsSunk: false });
       CreateGameboard.mockReturnValue({ getGameboardInfo: () => getGameboardInfoMockFn() });
 
       const player = CreateComputer(CreateGameboard());

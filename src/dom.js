@@ -176,8 +176,13 @@ const dom = (() => {
     boards.displayComputer(computerGameboard);
   };
 
-  const displayWinner = () => {
-    // code here
+  const displayWinner = (winner) => {
+    const displayWinnerModalBG = document.getElementById('gOMBackground');
+    displayWinnerModalBG.classList.toggle('notVisible');
+    displayWinnerModalBG.classList.toggle('visible');
+
+    const displayWinnerModalTitle = document.getElementById('gOMTitleContent');
+    displayWinnerModalTitle.textContent = `${winner} Won!`;
   };
 
   const init = () => {
