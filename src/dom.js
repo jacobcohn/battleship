@@ -112,7 +112,6 @@ const boards = (() => {
 
   const addBlueShipsForShips = (canvas, ctx, ships) => {
     const gridLength = canvas.width / 8;
-
     ships.forEach((coordinates) => {
       addShipWithColor(gridLength, ctx, coordinates, '#70CBFF');
     });
@@ -120,7 +119,6 @@ const boards = (() => {
 
   const addRedShipsForSunkenShips = (canvas, ctx, sunkenShips) => {
     const gridLength = canvas.width / 8;
-
     sunkenShips.forEach((coordinates) => {
       addShipWithColor(gridLength, ctx, coordinates, '#DC4151');
     });
