@@ -4,8 +4,6 @@ import dom from './dom';
 const events = (() => {
   const computerBoard = document.getElementById('computerBoard');
 
-  // resize
-
   const convertXYtoCoordinate = (squareLength, x, y) => {
     const gridLength = squareLength / 8;
     const row = Math.floor(Math.abs(y) / gridLength);
@@ -22,10 +20,15 @@ const events = (() => {
   };
 
   const hoverComputerBoard = () => {
+    let currentCoordinate;
+
     computerBoard.addEventListener('mousemove', (event) => {
       const coordinate = getCoordinate(event);
       if (!logic.isCoordinatePossibleAttack(coordinate)) return;
-      dom.hoverEffect(coordinate);
+      if (currentCoordinate !== coordinate) {
+        dom.hoverEffect(coordinate);
+        currentCoordinate = coordinate;
+      }
     });
   };
 
